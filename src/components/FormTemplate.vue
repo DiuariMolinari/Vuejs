@@ -13,8 +13,9 @@
                         <label for="email">Email</label>
                         <input type="email" class="form-control" name="email" id="email" v-model="person.email" required placeholder="Enter email">
                     </div>
-                   
-                    <button type="submit" class="btn btn-primary" @click="addPerson">Adicionar</button>
+
+                    <button v-if="this.isAdd" type="submit" class="btn btn-primary" @click="addPerson">Adicionar</button>
+                    <button v-else type="submit" class="btn btn-primary" @click="changePerson">Alterar</button>
                 </form>
             </div>
         </div>
@@ -30,17 +31,30 @@ export default {
                 name: '',
                 email: '',
             },
+            isAdd: true,
         }
     },
     emits: [
         "addPerson"
     ],
+    mounted() {
+        this.eventBus.on("editPerson", (person) => {
+            this.person = person;
+            this.isAdd = false;
+        });
+    },
     methods:  {
         addPerson() {
             if (this.validateFields() == true)
             {
-                console.log("submit");
-                this.eventBus.emit("addPerson", this.person);
+                this.eventBus.emit("addPerson", {id: this.person.id, name: this.person.name, email: this.person.email});
+                this.reset();
+            }
+        },
+        changePerson() {
+            if (this.validateFields() == true)
+            {
+                this.eventBus.emit("changedPerson", {id: this.person.id, name: this.person.name, email: this.person.email});
                 this.reset();
             }
         },
@@ -66,6 +80,7 @@ export default {
         reset() {
             this.person.name = null;
             this.person.email = null;
+            this.isAdd = true;
         },
     }
 }
