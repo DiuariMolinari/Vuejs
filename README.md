@@ -1,4 +1,4 @@
-# aula01-vuejs
+# Vuejs
 
 ## Project setup
 ```
