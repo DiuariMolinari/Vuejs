@@ -1,16 +1,16 @@
 <template>
   <FormTemplate></FormTemplate>
-  <Grid></Grid>
+  <SimpleGrid></SimpleGrid>
 </template>
 
 <script>
 import FormTemplate from "./FormTemplate.vue";
-import Grid from "./SimpleGrid.vue";
+import SimpleGrid from "./SimpleGrid.vue";
 
 export default {
     components: {
         FormTemplate,
-        Grid,
+        SimpleGrid,
     },
 }
 
