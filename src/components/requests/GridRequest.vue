@@ -3,8 +3,7 @@
         <form-request></form-request>  
         <div class="btnGroup">
             <input class="btn btn-primary" type="button" @click="showModal()" value="Novo Produto">
-            <input class="btn" type="button" @click="hideModal()" value="Cancelar">
-            <form-product hidden id="modalProduct"/>
+            <form-product @addProduct='addProductGrid' @changeProduct='changeProductGrid' @showForm="showModal()" @hideForm="hideModal()" :key="FormProductKey" :productEdit="this.productEdit" hidden id="modalProduct" />
         </div>
         <table class="table">
             <thead>
@@ -23,8 +22,8 @@
                     <td> {{ p.unitaryValue }} </td>
                     <td> {{ p.discountValue }} </td>
                     <td> {{ p.total }} </td>
-                    <td> <a @click="editProduct(p.id)" class="btn btn-warning"> Alterar</a> </td>
-                    <td> <a @click="deleteProduct(p.id)" class="btn btn-danger"> Deletar</a> </td>
+                    <td> <a @click="emitEditProduct(p.id)" class="btn btn-warning"> Alterar</a> </td>
+                    <td> <a @click="deleteProductGrid(p.id)" class="btn btn-danger"> Deletar</a> </td>
                 </tr>
                 <div class="totalizer">
                     <span>Total pedido: {{ this.totalRequest }}</span>
@@ -34,8 +33,8 @@
             </tbody>
         </table>
         <div>   
-            <input class="btn btn-primary" type="submit" value="Salvar">
-            <input class="btn btn-primary"  type="submit" value="Salvar/Novo">
+            <input class="btn btn-primary" type="submit" value="Salvar" @click="save()" >
+            <input class="btn btn-primary"  type="submit" value="Salvar/Novo" @click="saveNew()" >
         </div>
     </div>
 </template>
@@ -49,51 +48,95 @@ export default {
         return {
             request: {
                 id: '',
-                emitDate: '',
-                client: '',
                 products: [
-                    {
-                        id: 0,
-                        name: 'Camiseta',
-                        amount: 10,
-                        unitaryValue: 10,
-                        discountValue: 1,
-                        total: 0,
-                    }
+                    // {
+                    //     id: 1,
+                    //     name: 'teste',
+                    //     amount: 10,
+                    //     unitaryValue: 10,
+                    //     discountValue: 10,
+                    //     total: 0,
+                    // }
                 ],
             },
             isAdd: true,
             totalRequest: 0,
+
+            productEdit: null,
+            FormProductKey: 0,
         }
     },
     emits: [
 
     ],
     methods: {
-        editProduct(id){
-            console.log(id);
+        emitEditProduct(id) {
+            this.productEdit = this.request.products.find(p => p.id == id);
+            this.FormProductKey += 1;
         },
-        deleteProduct(id){
-            console.log(id);
-        },
+        
         showModal() {
             document.getElementById('modalProduct').removeAttribute("hidden");
         },
         hideModal(){
             document.getElementById('modalProduct').setAttribute("hidden", '');
-        }
-    },
+        },
+        addProductGrid(product) {
+            this.request.products.push(product);
+            this.hideModal();
+            this.calculateTotalRequestValue();
+        },
+        changeProductGrid(product) {
+            var index = this.request.products.findIndex(p => p.id == product.id);
+            this.request.products[index] = product;
+            this.calculateTotalRequestValue();
+        },
+        deleteProductGrid(id){
+            if(window.confirm("Confirmar exclusão?")){
+                var index = this.request.products.findIndex(p => p.id == id);
+                this.request.products.splice(index, 1);
+                this.calculateTotalRequestValue();
+            }
+        },
+        calculateTotalRequestValue() {
+            if(this.request.products.length > 0)
+            {
+                this.totalRequest = 0;
+                this.request.products.map(prod => {
+                    this.totalRequest += prod.total;
+                });    
+            }
+        },
+        validateRequesFields(){
+            var requestNumber = document.getElementById("requestNumber");
+            var requestClient = document.getElementsByClassName("multiselect-single-label");
 
+            var errorList = '';
+            if (requestNumber.value == "") {
+                errorList += "\r\n Campo \"Número pedido\" obrigatório!"
+            }
+
+            if (!requestClient[0] || !requestClient[0].innerText) {
+                errorList += "\r\n Campo \"Cliente\" obrigatório!"
+            }
+            
+            if(errorList.length > 0) {
+                alert(errorList);
+            }
+            
+        },
+        save() {
+            this.validateRequesFields();
+        },
+        saveNew() {
+
+        },
+
+        
+    },
     mounted() {
-        if(this.request.products)
-        {
-            this.request.products.map(prod => {
-                prod.total = prod.amount * prod.unitaryValue - prod.discountValue;
-                this.totalRequest += prod.total;
-            });    
-        }
+        this.calculateTotalRequestValue();
     },
-
     components: {
         FormRequest,
         FormProduct,
