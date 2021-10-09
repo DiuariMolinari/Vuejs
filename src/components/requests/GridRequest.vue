@@ -2,11 +2,10 @@
     <div class="container">
         <form-request></form-request>  
         <div class="btnGroup">
-            <input class="btn btn-primary" type="button" value="Adicionar Produto">
-            <input class="btn btn-info"    type="button" value="Editar">
-            <input class="btn btn-danger"  type="button" value="Excluir">
+            <input class="btn btn-primary" type="button" @click="showModal()" value="Novo Produto">
+            <input class="btn" type="button" @click="hideModal()" value="Cancelar">
+            <form-product hidden id="modalProduct"/>
         </div>
-
         <table class="table">
             <thead>
                 <tr>
@@ -24,6 +23,8 @@
                     <td> {{ p.unitaryValue }} </td>
                     <td> {{ p.discountValue }} </td>
                     <td> {{ p.total }} </td>
+                    <td> <a @click="editProduct(p.id)" class="btn btn-warning"> Alterar</a> </td>
+                    <td> <a @click="deleteProduct(p.id)" class="btn btn-danger"> Deletar</a> </td>
                 </tr>
                 <div class="totalizer">
                     <span>Total pedido: {{ this.totalRequest }}</span>
@@ -33,14 +34,16 @@
             </tbody>
         </table>
         <div>   
-            <input class="btn btn-primary" type="button" value="Salvar">
-            <input class="btn btn-primary"  type="button" value="Salvar/Novo">
+            <input class="btn btn-primary" type="submit" value="Salvar">
+            <input class="btn btn-primary"  type="submit" value="Salvar/Novo">
         </div>
     </div>
 </template>
 
 <script>
 import FormRequest from '../requests/FormRequest.vue'
+import FormProduct from '../requests/products/FormProduct.vue'
+
 export default {
     data() {
         return {
@@ -67,7 +70,18 @@ export default {
 
     ],
     methods: {
-
+        editProduct(id){
+            console.log(id);
+        },
+        deleteProduct(id){
+            console.log(id);
+        },
+        showModal() {
+            document.getElementById('modalProduct').removeAttribute("hidden");
+        },
+        hideModal(){
+            document.getElementById('modalProduct').setAttribute("hidden", '');
+        }
     },
 
     mounted() {
@@ -81,7 +95,8 @@ export default {
     },
 
     components: {
-        FormRequest
+        FormRequest,
+        FormProduct,
     },
 }
 </script>

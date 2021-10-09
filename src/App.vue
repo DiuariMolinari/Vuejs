@@ -20,5 +20,17 @@ import GridRequest from "./components/requests/GridRequest.vue";
 
 </script>
 <style>
+  .multiselect {
+    height: 34px;
+    font-size: 14px !important;
+  }
 
+  .multiselect-option {
+    font-size: 14px !important;
+  }
+
+  .multiselect-option.is-pointed:hover {
+    background: #26c08e !important;
+  }
+  
 </style>
