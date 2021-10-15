@@ -20,7 +20,7 @@
                         <label for="discountValue">Valor de Desconto</label>
                         <input type="number" min="0" class="form-control" name="discountValue" id="discountValue" v-model="product.discountValue" required >
                     </div>
-                    <div class="form-group col-md-3" style="margin-top: 22px">
+                    <div class="form-group col-md-3" style="left: -10px; top: 24px;">
 
                         <button v-if="this.isAdd" type="submit" class="btn btn-success" @click="addProduct()" >Adicionar</button>
                         <button v-else type="submit" class="btn btn-primary" @click="changeProduct()" > Salvar </button>
