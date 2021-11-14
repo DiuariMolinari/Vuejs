@@ -39,12 +39,13 @@ export default {
     data() {
         return {
             product: {
-                id: 0,
+                id: null,
                 name: '',
                 amount: 0,
                 unitaryValue: 0,
                 discountValue: 0,
                 total: 0,
+                uiId: 0,
             },
             isAdd: true,
             sequence: 0,
@@ -64,6 +65,7 @@ export default {
             this.calculateTotal();
             this.calculateSequence();
 
+            this.product.id = null;
             this.$emit('addProduct', Object.assign({}, this.product));
             this.clearForm();
         },
@@ -78,7 +80,7 @@ export default {
         },
         calculateSequence() {
             this.sequence += 1;
-            this.product.id = this.sequence;
+            this.product.uiId = this.sequence;
         },
         clearForm() {
             this.product.id = 0;
